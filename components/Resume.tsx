@@ -40,7 +40,9 @@ export default function Resume() {
           onClick={downloadPDF}
           className="mb-4 fixed top-4 right-4 z-10"
         >
-          <Download className="mr-2 h-4 w-4" />
+        <div className='d-flex justify-center'>
+        <Download className="mr-2 h-4 w-4" />
+        </div>
           Download PDF
         </button>
 
