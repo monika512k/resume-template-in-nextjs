@@ -1,22 +1,22 @@
-"use client"
-
 import React, { useRef } from 'react';
+import dynamic from 'next/dynamic';
 import { resumeData } from '../data/resumeData';
-import { Button } from "@/components/ui/button"
 import { MapPin, Phone, Mail, Linkedin, Download } from 'lucide-react';
-import html2pdf from 'html2pdf.js';
+
+// Dynamically import html2pdf.js with SSR disabled
+const html2pdf = dynamic(() => import('html2pdf.js'), { ssr: false });
 
 const iconMap = {
   MapPin,
   Phone,
   Mail,
-  Linkedin
+  Linkedin,
 };
 
 export default function Resume() {
   const resumeRef = useRef<HTMLDivElement>(null);
 
-  const downloadPDF = () => {
+  const downloadPDF = async () => {
     const element = resumeRef.current;
     if (!element) return;
 
@@ -25,22 +25,24 @@ export default function Resume() {
       filename: 'resume.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
     };
 
-    html2pdf().set(opt).from(element).save();
+    // Use dynamically imported html2pdf
+    const html2pdfInstance = await html2pdf();
+    html2pdfInstance.set(opt).from(element).save();
   };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
       <div className="max-w-[21cm] mx-auto">
-        <Button 
+        <button 
           onClick={downloadPDF}
           className="mb-4 fixed top-4 right-4 z-10"
         >
           <Download className="mr-2 h-4 w-4" />
           Download PDF
-        </Button>
+        </button>
 
         <div ref={resumeRef}  contentEditable="true" className="bg-white p-6 shadow-lg text-[10px] leading-tight">
           <header className="text-center mb-4">
